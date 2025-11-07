@@ -11,7 +11,7 @@ import ENVIRONMENT from "./environment.config.js";
 // Si la promesa falla, se lanza una excepcion y se captura en el catch
 async function connectToMongoDB(){
     try{
-        const connection_string = ENVIRONMENT.MONGO_DB_HOST + '/' + ENVIRONMENT.MONGO_DB_NAME
+        const connection_string = ENVIRONMENT.MONGO_DB_CONNECTION_STRING/*ENVIRONMENT.MONGO_DB_HOST + '/' + ENVIRONMENT.MONGO_DB_NAME */
         await mongoose.connect(connection_string)
         console.log("Conectado a MongoDB: " + ENVIRONMENT.MONGO_DB_NAME)
     }

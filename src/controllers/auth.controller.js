@@ -9,7 +9,7 @@ class AuthController{
         try{
             const {email, name, password} = req.body
             await AuthService.register(email, name, password)
-            res.send({
+            res.status(201).json({
                 ok: true,
                 message: "Usuario registrado con exito"
             })
@@ -20,14 +20,14 @@ class AuthController{
             Si es un error generico (no tiene status) entonces tirame un error generico.
             */
             if(error.status){
-                res.send({
+                res.status(error.status).json({
                     ok: false,
                     message: error.message,
                     status: error.status
                 })
             }
             else{
-                res.send({
+                res.status(500).json({
                     ok: false,
                     message: 'Error interno en el servidor',
                     status: 500
@@ -85,7 +85,7 @@ class AuthController{
         catch(error){
             if(error.status){
                 res.send(`<h1>${error.message}</h1>`)
-                /* res.send({
+                /* res.json({
                     ok: false,
                     message: error.message,
                     status: error.status
@@ -94,7 +94,7 @@ class AuthController{
             else{
                 console.error(error.message)
                 res.send('<h1>Error interno en el servidor</h1>')
-                /* res.send({
+                /* res.json({
                     ok: false,
                     message: 'Error interno en el servidor',
                     status: 500
@@ -102,25 +102,6 @@ class AuthController{
             }
         }
     } //login
-
-    /*  static async verifyUser(req, res){
-        try{
-            const { verification_token } = req.params
-            await AuthService.verifyUser(verification_token)
-            res.redirect(ENVIRONMENT.FRONTEND_URL + '/home?from=login_screen')
-        }
-        catch(error){
-            if(error.status){
-                res.send(`<h1>${error.message}</h1>`)
-                
-            }
-            else{
-                console.error(error.message)
-                res.send('<h1>Error interno en el servidor</h1>')
-            }
-        }
-    }*/
-    
 }
 
 export default AuthController
