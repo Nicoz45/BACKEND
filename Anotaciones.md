@@ -34,3 +34,5 @@ Para desplegar mi backend hecha en mongodb vamos a mongoDB Atlas en el navegador
                     { "src": "/(.*)", "dest": "/src/main.js" }
                 ]
             }
+
+Una vez hecha toda esta nueva configuracion, vamos a vercel desde el navegador y le damos a deployed, dejamos todo por defecto y agregamos las varibales de entorno.
