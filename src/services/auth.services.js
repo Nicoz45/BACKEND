@@ -32,7 +32,7 @@ class AuthService {
             {user_id: user_id_created},
             ENVIRONMENT.SECRET_JWT)
 
-        mailTransporter.sendMail({
+        await mailTransporter.sendMail({
             from: ENVIRONMENT.GMAIL_USER,
             to: email,
             subject: 'Verifica tu cuenta de mail',
