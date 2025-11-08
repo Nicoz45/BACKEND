@@ -32,7 +32,7 @@ class AuthService {
             ENVIRONMENT.SECRET_JWT)
 
         try {
-            mailTransporter.sendMail({
+            await mailTransporter.sendMail({
                 from: ENVIRONMENT.GMAIL_USER,
                 to: email,
                 subject: 'Verifica tu cuenta de mail',
@@ -41,7 +41,6 @@ class AuthService {
                 <a href="${ENVIRONMENT.BACKEND_URL}/api/auth/verify-email/${verification_token}">Verificar</a>
             `
             })
-            return
         } catch (error) {
             console.error('[SERVER ERROR]: No se pudo enviar el mail de verificacion', error)
             throw new ServerError(500, 'No se pudo enviar el mail de verificacion')
