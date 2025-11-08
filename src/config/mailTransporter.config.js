@@ -12,12 +12,4 @@ const mailTransporter = nodemailer.createTransport({
     }
 })
 
-mailTransporter.verify((error, success) => {
-    if (error) {
-        console.error('[SERVER ERROR]: No se pudo conectar con el servicio de mail', error)
-    } else {
-        console.log('[SERVER]: Conectado al servicio de mail correctamente')
-    }
-})  
-
 export default mailTransporter

@@ -1,11 +1,10 @@
 import User from "../models/User.model.js"
-import mongoose from "mongoose";
 
 class UserRepository {
 
     static async create(name, email, password) {
         try {
-            const newUser = await User.create({
+            const newUser = await User.insertOne({
                 name: name,
                 email: email,
                 password: password
