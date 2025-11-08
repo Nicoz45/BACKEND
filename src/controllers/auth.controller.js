@@ -41,7 +41,7 @@ class AuthController{
         try{
             const { verification_token } = req.params
             await AuthService.verifyEmail(verification_token)
-            res.redirect(ENVIRONMENT.MONGO_DB_CONNECTION_STRING + '/login?from=verified_email')/* (ENVIRONMENT.FRONTEND_URL + '/login?from=verified_email') */
+            res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')/* (ENVIRONMENT.FRONTEND_URL + '/login?from=verified_email') */
             /* res.json({
                 ok: true,
                 message: `Email verificado con exito`,
