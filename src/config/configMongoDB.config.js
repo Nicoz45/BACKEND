@@ -13,7 +13,7 @@ async function connectToMongoDB(){
     try{
         const connection_string = ENVIRONMENT.MONGO_DB_CONNECTION_STRING/*ENVIRONMENT.MONGO_DB_HOST + '/' + ENVIRONMENT.MONGO_DB_NAME */
         await mongoose.connect(connection_string)
-        console.log("Conectado a MongoDB: " + ENVIRONMENT.MONGO_DB_NAME)
+        console.log("Conectado a MongoDB: " + ENVIRONMENT.MONGO_DB_CONNECTION_STRING)
     }
     catch(error){
         console.error("Error conectando a MongoDB", error)

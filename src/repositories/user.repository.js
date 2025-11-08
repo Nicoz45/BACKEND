@@ -1,15 +1,16 @@
 import User from "../models/User.model.js"
+import mongoose from "mongoose";
 
 class UserRepository {
 
     static async create(name, email, password) {
         try {
-            return await User.insertOne({
+            const newUser = await User.create({
                 name: name,
                 email: email,
                 password: password
             })
-            console.log('[SERVER]: usuario creado con exito')
+            return newUser
         }
         catch (error) {
             console.error('[SERVER ERROR]: No se pudo crear el usuario', error)
