@@ -59,6 +59,24 @@ class MembersWorkspaceRepository {
             throw error
         }
     }
+
+    static async getAllByUserId(user_id){
+        const members = await WorkspaceMembers.find({id_user: user_id, active: true}).populate('id_workspace')
+
+        const members_list_formatted = members.map(
+            (member)=>{
+                return{
+                    workspace_id: member.id_workspace._id,
+                    workspace_name: member.id_workspace.name,
+                    workspace_created_at: member.id_workspace.created_at,
+                    workspace_url_image: member.id_workspace.url_image,
+                    member_id: member._id,
+                    member_user_id: member.id_user,
+                    member_role: member.role,
+                }
+            }) 
+            return members_list_formatted
+    }
 }
 
 export default MembersWorkspaceRepository

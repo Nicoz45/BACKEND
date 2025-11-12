@@ -16,6 +16,5 @@ const ENVIRONMENT = {
     //MONGO_DB_HOST: process.env.MONGO_DB_HOST,
 }
 
-console.log(ENVIRONMENT)
 
 export default ENVIRONMENT
