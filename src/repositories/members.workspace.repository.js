@@ -18,9 +18,9 @@ class MembersWorkspaceRepository {
 
     static async getAll(){
         try{
-            const all_members = await WorkspaceMembers.find({active: true})
+            const member_workspaces = await WorkspaceMembers.find()
             console.log(all_members)
-            return all_members
+            return member_workspaces
         }
         catch(error){
             console.error('[SERVER ERROR]: No se pudo obtener un listado de miembros', error)
@@ -28,9 +28,9 @@ class MembersWorkspaceRepository {
         }
     }
 
-    static async getById(members_id){
+    static async getById(member_id){
         try{
-            const member_found = await WorkspaceMembers.findById(members_id)
+            const member_found = await WorkspaceMembers.findById(member_id)
             console.log(member_found)
             return member_found
         }
@@ -40,9 +40,10 @@ class MembersWorkspaceRepository {
         }
     }
 
-    static async deleteById(members_id){
+    static async deleteById(member_id){
         try{
-            await WorkspaceMembers.findByIdAndDelete(members_id)
+            const member_workspace_deleted = await WorkspaceMembers.findByIdAndDelete(member_id)
+            return member_workspace_deleted
         }
         catch(error){
             console.error('[SERVER ERROR]: No se pudo eliminar al miembro', error)
@@ -50,9 +51,10 @@ class MembersWorkspaceRepository {
         }
     }
 
-    static async updateById(members_id, update_member){
+    static async updateById(member_id, update_member){
         try{
-            await WorkspaceMembers.findByIdAndUpdate(members_id, update_member)
+            const update =await WorkspaceMembers.findByIdAndUpdate(member_id, update_member)
+            return update
         }
         catch(error){
             console.error('[SERVER ERROR]: No se pudo actualizar la informacion del miembro', error)
@@ -61,8 +63,10 @@ class MembersWorkspaceRepository {
     }
 
     static async getAllByUserId(user_id){
-        const members = await WorkspaceMembers.find({id_user: user_id, active: true}).populate('id_workspace')
+        //.populate nos permite expandir los datos de una referencia.
+        const members = await WorkspaceMembers.find({id_user: user_id}).populate('id_workspace')
 
+        /*Esto lo hacemos para dar formato a la respuesta, ya que mongoose mos da los datos pero desordenados */
         const members_list_formatted = members.map(
             (member)=>{
                 return{
@@ -75,8 +79,9 @@ class MembersWorkspaceRepository {
                     member_role: member.role,
                 }
             }) 
+            console.log(members_list_formatted)
             return members_list_formatted
-    }
+        }
 }
 
 export default MembersWorkspaceRepository
