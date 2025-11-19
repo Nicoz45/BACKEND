@@ -241,3 +241,6 @@ Yo quiero obtener una lista de espacios de trabajo de un usuario y no de todo el
             })
 
         }
+
+- Ahora toca hacer algo super importante, y es crear la ruta de la consulta al backend '/api/member/confirm'
+- Creamos un archivo nuevo que va a ser... member.router.js

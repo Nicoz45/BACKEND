@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import ENVIRONMENT from './config/environment.config.js';
 import mailTransporter from './config/mailTransporter.config.js';
 import cors from 'cors';
+import memberRouter from './routes/member.router.js';
 
 
 connectToMongoDB()
@@ -19,6 +20,7 @@ app.use(cors());
 // Todas las consultas que empicen con /api/auth van a ser gestionadas con authRouer.
 app.use('/api/auth',authRouter)
 app.use('/api/workspace', workspaceRouter)
+app.use('/api/member', memberRouter)
 
 /* mailTransporter.sendMail(
     {
