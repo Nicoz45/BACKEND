@@ -156,3 +156,88 @@ Yo quiero obtener una lista de espacios de trabajo de un usuario y no de todo el
             workspaceRouter.get('/', 
                 authMiddleware,
                 WorkspaceController.getAll)
+
+
+- Despues de crear el workspaceMiddleware, pasamos a hacer una prueba:
+    - Vamos al archivo de rutas y creamos un get hacia /:workspace_id/test
+
+
+### Clase 23
+- Para hacer la invitacion al espacio de trabajo:
+    Client(admin) va a hacer un POST a /api/workspace/:workspace_id/invite
+    Y vamos a estar pasando por body:{
+                                        email: "usuarioinvitado@gmail.com"
+                                     }
+
+- Nuestra api le va a enviar un mail al invitado, que pueda contener un link de invitacion al workspace y que esto verifique su auth_token
+
+- La idea es que el link de unirse tenga un invite_token{
+                                                            id_workspace,
+                                                            id_inviter,
+                                                            id_invited,
+                                                            role: 'user'
+                                                        }
+
+- Muy importante, el invite solo lo puede hacer un administrador(hacer verificacion)
+
+- Hitos a lograr para conseguir hacer el invite:
+                - Verificar que exista un usuario (EN LA DB) con el email_invited
+                    Por?: Hay que chequear que el usuario invitado exista
+                    Ejemplo: Los invito a un grupo de wpp y ustedes no tienen wpp.
+                    Si no existe tirar un error 404
+                
+                - Verificar que YA NO ESTE en el workspace, sino seria un miembro duplicado
+
+                - Generar un token con:
+                    {
+                        id_invited,
+                        id_inviter,
+                        id_workspace,
+                        invited_role
+                    }
+                
+                - Enviar el mail de invitacion
+                    Ejemplo:
+                        `
+                        <h1>Has sido invitado al Workspace: ${workspace_selected.name}</h1>
+                        <a href="${URL_FRONTEND}/api/member/confirm/${invite_token}">Aceptar</a>
+                        `
+
+- Vamos al archivo de workspaceService y hacemos la logica de negocio:
+        static async invite(member, workspace_selected, email_invited, role_invited) {
+            console.log(member, workspace_selected, email_invited, role_invited)
+            const user_invited = await UserRepository.getByEmail(email_invited)
+            console.log(user_invited)
+            if(!user_invited){
+                throw new ServerError(404, 'El usuario invitado no existe')
+            }
+
+            const already_member = await MembersWorkspaceRepository.getByUserIdAndWorkspaceId(user_invited._id, workspace_selected._id)
+            if(already_member){
+                throw new ServerError(400, `${member.name} ya existe en el espacio de trabajo`)
+            }
+
+            const invitation_token = jwt.sign(
+                {
+                    id_invited: user_invited._id,
+                    id_inviter: member._id,
+                    id_workspace: workspace_selected._id,
+                    invited_role: role_invited
+                },
+                ENVIRONMENT.SECRET_JWT,
+                {
+                    expiresIn: "7d"
+                }
+            )
+
+            await mailTransporter.sendMail({
+                to: email_invited,
+                from: ENVIRONMENT.GMAIL_USER,
+                subject: 'Te han invitado a un espacio de trabajo',
+                html: `
+                        <h1>Has sido invitado al workspace: ${workspace_selected.name}</h1>
+                        <a href=${ENVIRONMENT.BACKEND_URL}/api/member/confirm/${invitation_token}>Aceptar</a>
+                `
+            })
+
+        }

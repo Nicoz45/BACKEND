@@ -1,3 +1,4 @@
+import { ServerError } from "../error.js"
 import WorkSpaceRepository from "../repositories/workspace.repository.js"
 import workspaceRouter from "../routes/workspace.router.js"
 import WorkspaceService from "../services/workspace.service.js"
@@ -59,6 +60,29 @@ class WorkspaceController {
 
         }
     }
+
+    static async invite(req, res){
+        try{
+            const {member, workspace_selected, user} = req
+            const {email_invited, role_invited} = req.body
+            await WorkspaceService.invite(member, workspace_selected, email_invited, role_invited)
+            res.json({
+                status: 200,
+                message: 'Invitacion enviada',
+                ok: true
+            })
+        }
+        catch(error){
+            if (error.status) {
+                res.send(`<h1>${error.message}</h1>`)
+            }
+            else {
+                console.error(error.message)
+                res.send('<h1>Error interno en el servidor</h1>')
+            }
+        }
+    }
+
 }
 
 

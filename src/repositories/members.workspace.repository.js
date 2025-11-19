@@ -82,6 +82,13 @@ class MembersWorkspaceRepository {
             console.log(members_list_formatted)
             return members_list_formatted
         }
+
+        static async getByUserIdAndWorkspaceId(user_id, workspace_id){
+            const member = await WorkspaceMembers.findOne({id_user: user_id, id_workspace: workspace_id})
+            return member
+        }
 }
+
+
 
 export default MembersWorkspaceRepository

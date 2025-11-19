@@ -1,5 +1,10 @@
+import jwt from "jsonwebtoken"
+import { ServerError } from "../error.js"
 import MembersWorkspaceRepository from "../repositories/members.workspace.repository.js"
+import UserRepository from "../repositories/user.repository.js"
 import WorkSpaceRepository from "../repositories/workspace.repository.js"
+import ENVIRONMENT from "../config/environment.config.js"
+import mailTransporter from "../config/mailTransporter.config.js"
 
 class WorkspaceService {
     static async getAll(user_id) {
@@ -16,6 +21,44 @@ class WorkspaceService {
         await MembersWorkspaceRepository.createMember(user_id, workspace_created._id, 'Admin')
 
         return workspace_created
+    }
+
+    static async invite(member, workspace_selected, email_invited, role_invited) {
+        console.log(member, workspace_selected, email_invited, role_invited)
+        const user_invited = await UserRepository.getByEmail(email_invited)
+        console.log(user_invited)
+        if(!user_invited){
+            throw new ServerError(404, 'El usuario invitado no existe')
+        }
+
+        const already_member = await MembersWorkspaceRepository.getByUserIdAndWorkspaceId(user_invited._id, workspace_selected._id)
+        if(already_member){
+            throw new ServerError(400, `${member.name} ya existe en el espacio de trabajo`)
+        }
+
+        const invitation_token = jwt.sign(
+            {
+                id_invited: user_invited._id,
+                id_inviter: member._id,
+                id_workspace: workspace_selected._id,
+                invited_role: role_invited
+            },
+            ENVIRONMENT.SECRET_JWT,
+            {
+                expiresIn: "7d"
+            }
+        )
+
+        await mailTransporter.sendMail({
+            to: email_invited,
+            from: ENVIRONMENT.GMAIL_USER,
+            subject: 'Te han invitado a un espacio de trabajo',
+            html: `
+                    <h1>Has sido invitado al workspace: ${workspace_selected.name}</h1>
+                    <a href=${ENVIRONMENT.BACKEND_URL}/api/member/confirm/${invitation_token}>Aceptar</a>
+            `
+        })
+
     }
 }
 
