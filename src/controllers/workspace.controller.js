@@ -8,17 +8,16 @@ import WorkspaceService from "../services/workspace.service.js"
 class WorkspaceController {
     static async getAll(req, res) {
         try {
-            const userId = req.user._id
-            const user = await UserRepository.getById(userId)
-            const workspaces = await WorkspaceService.getAll(user)
+            const user = req.user
+            console.log(user)
+            const workspaces = await WorkspaceService.getAll(user.id)
             console.log(workspaces)
-            /* console.log(req) */
             const data = res.status(200).json({
                 ok: true,
                 status: 200,
                 message: "Lista de workspaces obtenida correctamente",
                 data: {
-                    workspaces: workspaces
+                    workspaces: workspaces  
                 }
             })
             console.log(data.workspaces)

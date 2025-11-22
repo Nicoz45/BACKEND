@@ -69,11 +69,13 @@ class MembersWorkspaceRepository {
         /*Esto lo hacemos para dar formato a la respuesta, ya que mongoose mos da los datos pero desordenados */
         const members_list_formatted = members.map(
             (member)=>{
+                // id_workspace puede ser null si la referencia fue eliminada o no existe
+                const workspace = member.id_workspace || {}
                 return{
-                    workspace_id: member.id_workspace._id,
-                    workspace_name: member.id_workspace.name,
-                    workspace_created_at: member.id_workspace.created_at,
-                    workspace_url_image: member.id_workspace.url_image,
+                    workspace_id: workspace._id || workspace.id || null,
+                    workspace_name: workspace.name || null,
+                    workspace_created_at: workspace.created_at || null,
+                    workspace_url_image: workspace.url_image || null,
                     member_id: member._id,
                     member_user_id: member.id_user,
                     member_role: member.role,

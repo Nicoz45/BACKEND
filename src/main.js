@@ -13,8 +13,8 @@ connectToMongoDB()
 
 const app = express();
 //Configuro a mi api como api publica, cualquier dominio va a poder hacer consultas a mi api
-app.use(express.json())
 app.use(cors());
+app.use(express.json())
 
 
 // Todas las consultas que empicen con /api/auth van a ser gestionadas con authRouer.
