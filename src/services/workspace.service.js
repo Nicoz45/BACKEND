@@ -60,6 +60,29 @@ class WorkspaceService {
         })
 
     }
+
+    static async updateById(workspace_id, update_workspace){
+        try {
+            await WorkSpaceRepository.updateById(workspace_id, update_workspace)
+            const workspace_updated = WorkSpaceRepository.getById(workspace_id)
+            return workspace_updated
+        } catch (error) {
+            console.error(error.message)
+            throw new ServerError('Error')
+        }
+    }
+
+    static async deleteById(workspace_id){
+        try {
+            await WorkSpaceRepository.deleteById(workspace_id)
+            const workspace_deleted = WorkSpaceRepository.getById(workspace_id)
+            return workspace_deleted
+            
+        } catch (error) {
+            console.error(error.message)
+            throw new ServerError('Error interno')
+        }
+    }
 }
 
 export default WorkspaceService

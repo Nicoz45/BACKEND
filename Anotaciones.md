@@ -244,3 +244,65 @@ Yo quiero obtener una lista de espacios de trabajo de un usuario y no de todo el
 
 - Ahora toca hacer algo super importante, y es crear la ruta de la consulta al backend '/api/member/confirm'
 - Creamos un archivo nuevo que va a ser... member.router.js
+        const memberRouter = express.Router()
+
+        memberRouter.get('/confirm/:invitation_token',
+            MemberController.confirmInvitation)
+
+        export default memberRouter
+
+- Creamos el controlador correspondiente
+        class MemberController {
+            static async confirmInvitation(req, res) {
+                try {
+                    // Una vez que tenemos el token, lo decodificamos
+                    const { invitation_token } = req.params
+                    await MemberWorkspaceService.confirmInvitation(invitation_token)
+
+                    res.redirect(ENVIRONMENT.FRONTEND_URL + '/login')
+                } catch (error) {
+                    if (error instanceof jwt.JsonWebTokenError) {
+                        res.status(400).json(
+                            {
+                                ok: false,
+                                message: 'Token invalido',
+                                status: 400
+                            }
+                        )
+                    }
+                    else if (error instanceof jwt.TokenExpiredError) {
+                        res.status(401).json(
+                            {
+                                ok: false,
+                                message: 'Token expirado, vuelve a solivcitar la invitacion',
+                                status: 401
+                            }
+                        )
+                    }
+
+                    else if (error.status) {
+                        res.send(`<h1>${error.message}</h1>`)
+                    }
+                    else {
+                        console.error(error.message)
+                        res.send('<h1>Error interno en el servidor</h1>')
+                    }
+                }
+            }
+        }
+
+        export default MemberController
+
+
+
+### Clase 24
+
+- Creat un endpoint POST /workspaces/:workspace_id/channels (solo admins)
+    body:{
+        name
+    }
+    crear un nuevo canal.
+
+- Crear una ruta GET /workspaces/:workspace_id
+- Obtener los detalles de un espacio de trabajo
+- Cargar la lista de canales de un espacio de trabajo (opcional)

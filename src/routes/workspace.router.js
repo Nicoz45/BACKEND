@@ -2,6 +2,7 @@ import express from 'express';
 import WorkspaceController from '../controllers/workspace.controller.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import workspaceMiddleware from '../middlewares/workspaceMiddleware.js';
+import ChannelController from '../controllers/channel.controller.js';
 
 const workspaceRouter = express.Router()
 
@@ -15,6 +16,34 @@ workspaceRouter.get('/',
 workspaceRouter.post('/',
     authMiddleware,
     WorkspaceController.create
+)
+
+workspaceRouter.get(
+    '/:workspace_id',
+    authMiddleware,
+    workspaceMiddleware(),
+    WorkspaceController.getById
+)
+
+workspaceRouter.put(
+    '/:workspace_id',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    WorkspaceController.updateById
+)
+
+workspaceRouter.delete(
+    '/:workspace_id',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    WorkspaceController.deleteById
+)
+
+workspaceRouter.post(
+    '/:workspace_id/channels',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    ChannelController.create
 )
 
 workspaceRouter.get('/:workspace_id/test',
