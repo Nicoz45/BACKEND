@@ -72,10 +72,10 @@ class MembersWorkspaceRepository {
                 // id_workspace puede ser null si la referencia fue eliminada o no existe
                 const workspace = member.id_workspace || {}
                 return{
-                    workspace_id: workspace._id || workspace.id || null,
-                    workspace_name: workspace.name || null,
-                    workspace_created_at: workspace.created_at || null,
-                    workspace_url_image: workspace.url_image || null,
+                    workspace_id: workspace._id || workspace.id,
+                    workspace_name: workspace.name,
+                    workspace_created_at: workspace.created_at,
+                    workspace_url_image: workspace.url_image,
                     member_id: member._id,
                     member_user_id: member.id_user,
                     member_role: member.role,

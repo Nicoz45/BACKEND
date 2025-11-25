@@ -5,6 +5,7 @@ import UserRepository from "../repositories/user.repository.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import User from "../models/User.model.js";
+import crypto from "crypto"
 
 class AuthService {
     static async register(email, name, password) {
@@ -29,7 +30,7 @@ class AuthService {
         // Tercer parametro: Opciones adicionales como tiempo de expiracion, algoritmo de firma, etc.
         // Lo ideal es que esta clave secreta este en una variable de entorno y no hardcodeada.
         const verification_token = jwt.sign(
-            {user_id: user_id_created},
+            { user_id: user_id_created },
             ENVIRONMENT.SECRET_JWT)
 
         await mailTransporter.sendMail({
@@ -48,35 +49,35 @@ class AuthService {
         try {
             //Esto nos dice si el token esta firmado con x clave.
             const payload = jwt.verify(verification_token, ENVIRONMENT.SECRET_JWT) //Esto me va a dar el payload que firmamos al crear el token.
-            const {user_id} = payload //Sacamos el email del payload.
+            const { user_id } = payload //Sacamos el email del payload.
             // Puedo verificar que el email exista en la base de datos.
-            if(!user_id){
+            if (!user_id) {
                 throw new ServerError(400, 'Token invalido: token con datos insuficientes')
             }
             const user_found = await UserRepository.getById(user_id)
-            if(!user_found){
+            if (!user_found) {
                 throw new ServerError(404, 'Usuario no encontrado para el token proporcionado')
             }
-            if(user_found.verified_email){
+            if (user_found.verified_email) {
                 throw new ServerError(400, 'El email ya fue verificado previamente')
             }
             //El siguiente paso seria buscarlo por email en la base de datos y marcar su email como verificado.
             //Podemos pasar el id del usuario por el token.
             //Ahora si lo actualizamos por id.
-            await UserRepository.updateById(user_id, {verified_email: true})
+            await UserRepository.updateById(user_id, { verified_email: true })
             return
         }
         catch (error) {
             //Chequeamos si el error es de la verificacion del token.
-            if(error instanceof jwt.JsonWebTokenError){
+            if (error instanceof jwt.JsonWebTokenError) {
                 throw new ServerError(400, 'Token invalido')
             }
             throw error
         }
-        
+
     }
 
-    static async login(email, password){
+    static async login(email, password) {
         /*logica:
         - Buscar al usuario por email
         - Validar que exista
@@ -85,20 +86,21 @@ class AuthService {
         - Genera un token con datos de sesion del usuario y responderlo
         */
         const user_found = await UserRepository.getByEmail(email)
-        if(!user_found){
+        if (!user_found) {
             throw new ServerError(404, 'Usuario inexistente')
         }
-        if(!user_found.verified_email){
+        if (!user_found.verified_email) {
             throw new ServerError(401, 'Usuario con mail no verificado')
         }
-        const is_same_password =await bcrypt.compare(password, user_found.password)
-        if(!is_same_password){
+        const is_same_password = await bcrypt.compare(password, user_found.password)
+        if (!is_same_password) {
             throw new ServerError(401, 'Credenciales invalidas')
         }
 
         //Creo un token con datos de sesion del usuario (DATOS NO SENSIBLES)
         const auth_token = jwt.sign(
-            {name: user_found.name,
+            {
+                name: user_found.name,
                 email: user_found.email,
                 id: user_found.id
             },
@@ -106,32 +108,72 @@ class AuthService {
             ENVIRONMENT.SECRET_JWT
         )
         //Devolvemos el token
-        return{
+        return {
             auth_token: auth_token
         }
     }
 
-    /* static async verifyUser(verification_token){
-        try{
-            const payload = jwt.verify(verification_token, ENVIRONMENT.SECRET_JWT)
-            const {user_id} = payload
+    static async forgotPassword(email) {
+        const user = await UserRepository.getByEmail(email)
+        if (!user) {
+            throw new ServerError(404, 'Usuario no encontrado')
+        }
 
-            if(!user_id){
-                throw new ServerError(400, 'Token invalido')
-            }
-            const user_found = await UserRepository.getById(user_id)
-            if(!user_found){
-                throw new ServerError(404, 'Usuario no encontrado para el token proporcionado')
-            }
-            return
+        const resetToken = crypto.randomBytes(32).toString('hex')
+        console.log('Reset Token (enviado por mail): ', resetToken)
+        const resetTokenHash = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex')
+
+        await UserRepository.updateById(user._id,
+            {
+                resetPasswordToken: resetTokenHash,
+                resetPasswordExpires: Date.now() + 3600000
+            })
+
+        const resetUrl = `${ENVIRONMENT.FRONTEND_URL}/reset-password/${resetToken}`
+
+        await mailTransporter.sendMail({
+            to: email,
+            from: ENVIRONMENT.GMAIL_USER,
+            subject: 'Reseteo de contraseña',
+            html: `
+                <h1>Solicitud de reseteo de contraseña</h1>
+                <p>Has solicitado resetear tu contraseña.</p>
+                <p>Haz click en este link para continuar:</p>
+                <a href="${resetUrl}">${resetUrl}</a>
+                <p>Este link expira en 1 hora.</p>
+                <p>Si no solicitaste este cambio, ignora este mail.</p>
+            `
+        })
+        return
+    }
+
+    static async resetPassword(token, new_password) {
+        const resetTokenHash = crypto
+            .createHash('sha256')
+            .update(token)
+            .digest('hex')
+
+        const user = await User.findOne({
+            resetPasswordToken: resetTokenHash,
+            resetPasswordExpires: { $gt: Date.now() }
+        })
+
+        if (!user) {
+            throw new ServerError(400, 'Token invalido o expirado')
         }
-        catch(error){
-            if(error instanceof jwt.JsonWebTokenError){
-                throw new ServerError(400, 'Token invalido')
-            }
-            throw error
-        }
-    } */
+        const password_hashed = await bcrypt.hash(new_password, 12)
+
+        await UserRepository.updateById(user._id,
+            {
+                password: password_hashed,
+                resetPasswordToken: null,
+                resetPasswordExpires: null
+            })
+        return
+    }
 }
 
 export default AuthService

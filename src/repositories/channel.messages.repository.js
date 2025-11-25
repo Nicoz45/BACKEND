@@ -1,13 +1,15 @@
 import ChannelMessages from "../models/Channel.messages.model.js";
 
 class ChannelMessagesRepository {
-    static async create(channels_id, sender_member_id){
+    static async create(content, channel_id, sender_member_id){
         try{
-            await ChannelMessages.insertOne({
-                channels_id: channels_id,
-                sender_member_id: sender_member_id
+            const message_created = await ChannelMessages.insertOne({
+                channel_id: channel_id,
+                sender_member_id: sender_member_id,
+                content: content,
             })
             console.log('[SERVER]: Mensaje enviado con exito.')
+            return message_created
         }
         catch(error){
             console.error('[SERVER ERROR]: No se pudo enviar el mensaje ', error)
@@ -53,6 +55,30 @@ class ChannelMessagesRepository {
             console.error('[SERVER ERROR]: No se pudo actualizar los datos solicitados ', error)
             throw error
         }
+    }
+
+    static async getAllByChannelId(channel_id){
+        const messages = await ChannelMessages.find({channel_id: channel_id})
+        .populate({
+            path: 'sender_member_id',
+            populate: {
+                path: 'id_user',
+                model: 'User',
+                select: 'name_id'
+            }
+        })
+
+        const messages_formated = messages.map(
+            (message) => {
+                return {
+                    _id: message._id,
+                    messae_content: message.content,
+                    member_id: message.sender_member_id._id,
+                    user_name: message.sender_member_id.id_user.name
+                }
+            }
+        )
+        return messages_formated
     }
 }
 

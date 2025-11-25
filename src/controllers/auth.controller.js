@@ -102,6 +102,72 @@ class AuthController{
             }
         }
     } //login
+
+    static async forgotPassword(req, res){
+        try {
+            const {email} = req.body
+            if(!email){
+                throw new ServerError(400, 'El mail es requerido')
+            }
+            await AuthService.forgotPassword(email)
+            res.status(200).json({
+                ok: true,
+                message: 'Email de recuperacion enviado exitosamente',
+                status: 200
+            })
+        }
+        catch(error){
+            if(error.status){
+                res.status(error.status).json({
+                    ok: false,
+                    message: error.message,
+                    status: error.status
+                })
+            }
+            else{
+                console.error(error.message)
+                res.status(500).json({
+                    ok: false,
+                    message: 'Error interno en el servidor',
+                    status: 500
+                })
+            }
+        }
+    }
+
+    static async resetPassword(req, res){
+        try {
+            const {token} = req.params
+            const {password} = req.body
+
+            if(!password){
+                throw new ServerError(400, 'La contraseña es requerida')
+            }
+
+            await AuthService.resetPassword(token, password)
+            res.status(200).json({
+                ok: true,
+                message: 'Contraseña actualizada exitosamente',
+                status: 200
+            })
+        } catch (error) {
+            if(error.status){
+                res.status(error.status).json({
+                    ok: false,
+                    message: error.message,
+                    status: error.status
+                })
+            }
+            else{
+                console.error(error.message)
+                res.status(500).json({
+                    ok: false,
+                    message: 'Error interno en el servidor',
+                    status: 500
+                })
+            }
+        }
+    }
 }
 
 export default AuthController

@@ -1,5 +1,5 @@
-import { ServerError } from "../error"
-import ChannelsRepository from "../repositories/channels.repository"
+import { ServerError } from "../error.js"
+import ChannelsRepository from "../repositories/channels.repository.js"
 
 async function channelMiddleware(req, res, next) {
     try {
@@ -31,4 +31,5 @@ async function channelMiddleware(req, res, next) {
         }
     }
 }
-    
+
+export default channelMiddleware
