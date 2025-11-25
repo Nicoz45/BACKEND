@@ -1,9 +1,9 @@
 import ChannelMessages from "../models/Channel.messages.model.js";
 
 class ChannelMessagesRepository {
-    static async create(content, channel_id, sender_member_id){
+    static async create(content, sender_member_id, channel_id){
         try{
-            const message_created = await ChannelMessages.insertOne({
+            const message_created = await ChannelMessages.create({
                 channel_id: channel_id,
                 sender_member_id: sender_member_id,
                 content: content,
@@ -13,6 +13,7 @@ class ChannelMessagesRepository {
         }
         catch(error){
             console.error('[SERVER ERROR]: No se pudo enviar el mensaje ', error)
+            throw error
         }
     }
 
@@ -58,27 +59,35 @@ class ChannelMessagesRepository {
     }
 
     static async getAllByChannelId(channel_id){
-        const messages = await ChannelMessages.find({channel_id: channel_id})
-        .populate({
-            path: 'sender_member_id',
-            populate: {
-                path: 'id_user',
-                model: 'User',
-                select: 'name_id'
-            }
-        })
-
-        const messages_formated = messages.map(
-            (message) => {
-                return {
-                    _id: message._id,
-                    messae_content: message.content,
-                    member_id: message.sender_member_id._id,
-                    user_name: message.sender_member_id.id_user.name
+        try{
+            const messages = await ChannelMessages.find({channels_id: channel_id})
+            .populate({
+                path: 'sender_member_id',
+                populate: {
+                    path: 'id_user',
+                    model: 'User',
+                    select: 'name _id'
                 }
-            }
-        )
-        return messages_formated
+            })
+
+            const messages_formated = messages.map(
+                (message) => {
+                    return {
+                        _id: message._id,
+                        message_content: message.content,
+                        member_id: message.sender_member_id._id,
+                        user_name: message.sender_member_id.id_user.name || 'Unknown',
+                        created_at: message.created_at
+                    }
+                }
+            )
+            console.log(messages)
+            return messages_formated
+        }
+        catch(error){
+            console.error('[SERVER ERROR]: No se pudo obtener los mensajes del canal', error)
+            throw error
+        }
     }
 }
 

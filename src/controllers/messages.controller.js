@@ -4,9 +4,9 @@ class MessagesController {
     static async getAllByChannelId(req, res){
         try {
             const {channel_selected, member} = req
-            const {content} = req.body
-            const {messages} = await MessageService.getAllByChannelId(content, channel_selected._id)
-            response.status(200).json({
+            const {messages} = await MessageService.getAllByChannelId(channel_selected._id)
+            console.log('MESSAGES CONTROLLER:', messages)
+            res.status(200).json({
                 ok: true,
                 status: 200,
                 message: "Messages",
@@ -35,6 +35,15 @@ class MessagesController {
         try {
             const {channel_selected, member, user} = req
             const {content} = req.body
+
+            if(!content || content.length === 0){
+                return res.status(400).json({
+                    ok: false,
+                    status: 400,
+                    message: 'El contenido del mensaje es requerido'
+                })
+            }
+
             const {messages, message_created} = await MessageService.create(content, member._id, channel_selected._id)
             console.log('MESSAGE CREATED:', message_created)
             return res.status(201).json({
