@@ -60,7 +60,7 @@ class ChannelMessagesRepository {
 
     static async getAllByChannelId(channel_id){
         try{
-            const messages = await ChannelMessages.find({channels_id: channel_id})
+            const messages = await ChannelMessages.find({channel_id: channel_id})
             .populate({
                 path: 'sender_member_id',
                 populate: {
