@@ -23,7 +23,7 @@ class verificationService {
             verificationCodeExpiration: code_expiration
         })
 
-        await mailTransporter.sendMail({
+        await mailTransporter.sendMail.json({
             from: ENVIRONMENT.GMAIL_USER,
             to: user.email,
             subject: 'Codigo de verificacion - Crear Workspace',
