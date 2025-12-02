@@ -7,6 +7,7 @@ import ENVIRONMENT from './config/environment.config.js';
 import mailTransporter from './config/mailTransporter.config.js';
 import cors from 'cors';
 import memberRouter from './routes/member.router.js';
+import verificationRouter from './routes/verification.router.js';
 
 
 connectToMongoDB()
@@ -21,6 +22,7 @@ app.use(cors());
 app.use('/api/auth',authRouter)
 app.use('/api/workspace', workspaceRouter)
 app.use('/api/member', memberRouter)
+app.use('/api/verification', verificationRouter)
 
 /* mailTransporter.sendMail(
     {

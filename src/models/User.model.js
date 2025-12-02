@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
+    verificationCode:{
+        type: String,
+        default: null
+    },
+    verificationCodeExpiration: {
+        type: Date,
+        default: null
+    },
     created_at: {
         type: Date,
         default: Date.now(),
