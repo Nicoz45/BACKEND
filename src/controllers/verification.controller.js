@@ -4,12 +4,14 @@ class verificationController{
     static async sendCode(req, res){
         try {
             const user = req.user
+            console.log('req.user', user)
             const result = await verificationService.sendVerificationCode(user.id)
             res.status(200).json({
                 ok:true,
                 status:200,
                 message: result.message
             })
+            console.log(result)
         } catch (error) {
             if(error.status){
                 return res.status(error.status).json({
@@ -51,6 +53,7 @@ class verificationController{
                     verified: result.verified
                 }
             })
+            console.log(result)
         } catch (error) {
             if(error.status){
                 return res.status(error.status).json({

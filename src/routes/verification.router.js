@@ -4,7 +4,7 @@ import verificationController from '../controllers/verification.controller.js'
 
 const verificationRouter = express.Router()
 
-verificationRouter.post('/send-code',
+verificationRouter.post('/send-code/:user_id',
     authMiddleware,
     verificationController.sendCode
 )
