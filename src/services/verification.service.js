@@ -2,6 +2,7 @@ import ENVIRONMENT from "../config/environment.config.js";
 import mailTransporter from "../config/mailTransporter.config.js";
 import { ServerError } from "../error.js";
 import UserRepository from "../repositories/user.repository.js";
+import crypto from "crypto"
 
 class verificationService {
     static async sendVerificationCode(user_id) {
