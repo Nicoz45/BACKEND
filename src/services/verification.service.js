@@ -11,7 +11,7 @@ class verificationService {
             throw new ServerError(404, 'Usuario no encontrado')
         }
 
-        const verification_code = crypto.ramdomBytes(3).toString('hex').toUpperCase()
+        const verification_code = crypto.randomBytes(3).toString('hex').toUpperCase()
 
         const code_expiration = Date.now() + 10 * 60 * 1000
 
