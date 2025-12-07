@@ -123,7 +123,7 @@ class AuthService {
         console.log('Reset Token (enviado por mail): ', resetToken)
         const resetTokenHash = crypto
             .createHash('sha256')
-            .update(resetToken)
+            .update(token)
             .digest('hex')
 
         await UserRepository.updateById(user._id,
@@ -149,7 +149,7 @@ class AuthService {
             `
         })
         console.log(mail_send)
-        return mail_send
+        return
     }
 
     static async resetPassword(token, new_password) {
