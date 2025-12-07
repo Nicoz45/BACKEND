@@ -135,7 +135,7 @@ class AuthService {
         const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/reset-password/${resetToken}`
         console.log(resetUrl)
 
-        await mailTransporter.sendMail({
+        const mail_send = await mailTransporter.sendMail({
             to: email,
             from: ENVIRONMENT.GMAIL_USER,
             subject: 'Reseteo de contraseña',
@@ -148,6 +148,7 @@ class AuthService {
                 <p>Si no solicitaste este cambio, ignora este mail.</p>
             `
         })
+        console.log(mail_send)
         return
     }
 
@@ -157,6 +158,7 @@ class AuthService {
             .update(token)
             .digest('hex')
 
+            console.log(resetTokenHash)
         const user = await User.findOne({
             resetPasswordToken: resetTokenHash,
             resetPasswordExpires: { $gt: Date.now() }
