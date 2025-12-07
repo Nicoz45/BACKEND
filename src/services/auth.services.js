@@ -119,7 +119,7 @@ class AuthService {
             throw new ServerError(404, 'Usuario no encontrado')
         }
 
-        const resetToken = crypto.randomBytes(32).toString('hex')
+        const token = crypto.randomBytes(32).toString('hex')
         console.log('Reset Token (enviado por mail): ', resetToken)
         const resetTokenHash = crypto
             .createHash('sha256')
@@ -132,7 +132,7 @@ class AuthService {
                 resetPasswordExpires: Date.now() + 3600000
             })
 
-        const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/api/auth/reset-password/${resetToken}`
+        const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/reset-password/${token}`
         console.log(resetUrl)
 
         const mail_send = await mailTransporter.sendMail({
