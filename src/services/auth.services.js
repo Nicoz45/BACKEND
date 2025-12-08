@@ -120,7 +120,7 @@ class AuthService {
         }
 
         const token = crypto.randomBytes(32).toString('hex')
-        console.log('Reset Token (enviado por mail): ', resetToken)
+        console.log('Reset Token (enviado por mail): ', token)
         const resetTokenHash = crypto
             .createHash('sha256')
             .update(token)
