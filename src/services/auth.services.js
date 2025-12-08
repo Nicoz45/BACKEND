@@ -119,11 +119,11 @@ class AuthService {
             throw new ServerError(404, 'Usuario no encontrado')
         }
 
-        const token = crypto.randomBytes(32).toString('hex')
-        console.log('Reset Token (enviado por mail): ', token)
+        const resetToken = crypto.randomBytes(32).toString('hex')
+        console.log('Reset Token (enviado por mail): ', resetToken)
         const resetTokenHash = crypto
             .createHash('sha256')
-            .update(token)
+            .update(resetToken)
             .digest('hex')
 
         await UserRepository.updateById(user._id,
@@ -132,7 +132,7 @@ class AuthService {
                 resetPasswordExpires: Date.now() + 3600000
             })
 
-        const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/reset-password/${token}`
+        const resetUrl = `${ENVIRONMENT.BACKEND_URL}api/auth/reset-password/${resetToken}`
         console.log(resetUrl)
 
         const mail_send = await mailTransporter.sendMail({
@@ -143,13 +143,13 @@ class AuthService {
                 <h1>Solicitud de reseteo de contraseña</h1>
                 <p>Has solicitado resetear tu contraseña.</p>
                 <p>Haz click en este link para continuar:</p>
-                <a href="${resetUrl}">${resetUrl}</a>
+                <a href="${resetUrl}">Resetear-contraseña</a>
                 <p>Este link expira en 1 hora.</p>
                 <p>Si no solicitaste este cambio, ignora este mail.</p>
             `
         })
         console.log(mail_send)
-        return
+        return mail_send
     }
 
     static async resetPassword(token, new_password) {
