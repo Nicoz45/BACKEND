@@ -82,7 +82,7 @@ class WorkspaceService {
             // Eliminar el workspace
             await WorkSpaceRepository.deleteById(workspace_id)
             // Devolver el workspace que fue eliminado
-            return
+            return workspace_to_delete
         } catch (error) {
             console.error(error.message)
             throw error
