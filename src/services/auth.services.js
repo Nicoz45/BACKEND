@@ -132,7 +132,7 @@ class AuthService {
                 resetPasswordExpires: Date.now() + 3600000
             })
 
-        const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/reset-password/:token=${resetToken}`
+        const resetUrl = `${ENVIRONMENT.BACKEND_URL}api/reset-password/${resetToken}`
         console.log(resetUrl)
 
         const mail_send = await mailTransporter.sendMail({

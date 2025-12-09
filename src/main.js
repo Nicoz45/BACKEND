@@ -24,15 +24,6 @@ app.use('/api/workspace', workspaceRouter)
 app.use('/api/member', memberRouter)
 app.use('/api/verification', verificationRouter)
 
-/* mailTransporter.sendMail(
-    {
-        from: ENVIRONMENT.GMAIL_USER,
-        to: 'gisellezarate99@gmail.com',
-        subject: 'Mail de prueba',
-        html: '<h1> Has sido hackeada por nico fitness</h1>'
-    }
-) */
-
 
 app.listen(ENVIRONMENT.PORT || 8080, () => {
     console.log(`Tu servidor se esta ejecutando correctamente en el puerto ${ENVIRONMENT.PORT}`)
