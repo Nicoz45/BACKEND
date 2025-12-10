@@ -48,6 +48,22 @@ workspaceRouter.post(
     ChannelController.create
 )
 
+workspaceRouter.put(
+    '/:workspace_id/channels/:channel_id',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    channelMiddleware,
+    ChannelController.updateById
+)
+
+workspaceRouter.delete(
+    '/:workspace_id/channels/:channel_id',
+    authMiddleware,
+    workspaceMiddleware(['admin']),
+    channelMiddleware,
+    ChannelController.deleteById
+)
+
 workspaceRouter.get(
     '/:workspace_id/channels/:channel_id/messages',
     authMiddleware,
@@ -62,25 +78,6 @@ workspaceRouter.post(
     workspaceMiddleware(),
     channelMiddleware,
     MessagesController.create
-)
-
-
-
-workspaceRouter.get('/:workspace_id/test',
-    authMiddleware,
-    workspaceMiddleware(['admin']),
-    (req, res) => {
-        console.log(req.workspace_selected)
-        console.log(req.member)
-        res.json({
-            ok: true,
-            status: 200,
-            message: 'test'
-        })
-    }
-    /*
-    Lo que estoy haciendo aca es que solamente el administrador pueda hacerme una consulta a /test
-    */
 )
 
 workspaceRouter.post('/:workspace_id/invite',

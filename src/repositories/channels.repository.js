@@ -62,7 +62,8 @@ class ChannelsRepository {
 
     static async updateById(channel_id) {
         try {
-            await Channels.findByIdAndUpdate(channel_id)
+            const channel_updated =await Channels.findByIdAndUpdate(channel_id)
+            return channel_updated
         }
         catch (error) {
             console.error('[SERVER ERROR]: No se pudo actualizar la informacion del canal ', error)
