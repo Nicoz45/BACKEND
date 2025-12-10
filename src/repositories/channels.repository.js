@@ -3,11 +3,12 @@ import Channels from "../models/Channels.model.js";
 class ChannelsRepository {
     static async create(id_workspaces, name) {
         try {
-            await Channels.insertOne({
+            const new_channel =await Channels.create({
                 id_workspaces: id_workspaces,
                 name: name
             })
             console.log('[SERVER]: Canal creado con exito')
+            return new_channel
         }
         catch (error) {
             console.error('[SERVER ERROR]: No se pudo crear el canal ', error)
