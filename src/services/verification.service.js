@@ -10,13 +10,10 @@ class verificationService {
         if (!user) {
             throw new ServerError(404, 'Usuario no encontrado')
         }
-        console.log('Enviando codigo de verificacion a: ', user)
 
         const verification_code = crypto.randomBytes(3).toString('hex').toUpperCase()
-        console.log('Codigo de verificacion (enviado por mail): ', verification_code)
 
         const code_expiration = Date.now() + 10 * 60 * 1000
-        console.log('Codigo de verificacion expiracion: ', code_expiration)
 
         await UserRepository.updateById(user_id, {
             verificationCode: verification_code,

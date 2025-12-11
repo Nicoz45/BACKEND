@@ -9,9 +9,7 @@ class WorkspaceController {
     static async getAll(req, res) {
         try {
             const user = req.user
-            console.log(user)
             const workspaces = await WorkspaceService.getAll(user.id)
-            console.log(workspaces)
             const data = res.status(200).json({
                 ok: true,
                 status: 200,
@@ -20,15 +18,13 @@ class WorkspaceController {
                     workspaces: workspaces  
                 }
             })
-            console.log(data.workspaces)
         }
         catch (error) {
-            console.log(error)
             if (error.status) {
                 res.send(`<h1>${error.message}</h1>`)
             }
             else {
-                console.log(error.message)
+                console.error(error.message)
                 res.send('<h1>Error interno en el servidor</h1>')
             }
 

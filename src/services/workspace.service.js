@@ -9,12 +9,10 @@ import mailTransporter from "../config/mailTransporter.config.js"
 class WorkspaceService {
     static async getAll(user_id) {
         const members = await MembersWorkspaceRepository.getAllByUserId(user_id)
-        console.log(members)
         return members
     }
 
     static async create(user_id, name, url_image) {
-        console.log(user_id, name, url_image)
         //Crear el espacio de trabajo
         const workspace_created = await WorkSpaceRepository.createWorkspace(name, url_image)
         //Crear al miembro con rol de admin (creador del workspace)
@@ -24,9 +22,7 @@ class WorkspaceService {
     }
 
     static async invite(member, workspace_selected, email_invited, role_invited) {
-        console.log(member, workspace_selected, email_invited, role_invited)
         const user_invited = await UserRepository.getByEmail(email_invited)
-        console.log(user_invited)
         if(!user_invited){
             throw new ServerError(404, 'El usuario invitado no existe')
         }

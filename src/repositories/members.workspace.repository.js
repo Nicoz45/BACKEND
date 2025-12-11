@@ -8,7 +8,6 @@ class MembersWorkspaceRepository {
                 id_workspace: id_workspace,
                 role: role
             })
-            console.log('[SERVER]: Miembro agregado con exito')
         }
         catch (error) {
             console.error('[SERVER ERROR]: No se pudo agregar al miembro ', error)
@@ -19,7 +18,6 @@ class MembersWorkspaceRepository {
     static async getAll(){
         try{
             const member_workspaces = await WorkspaceMembers.find()
-            console.log(all_members)
             return member_workspaces
         }
         catch(error){
@@ -31,7 +29,6 @@ class MembersWorkspaceRepository {
     static async getById(member_id){
         try{
             const member_found = await WorkspaceMembers.findById(member_id)
-            console.log(member_found)
             return member_found
         }
         catch(error){
@@ -81,7 +78,6 @@ class MembersWorkspaceRepository {
                     member_role: member.role,
                 }
             }) 
-            console.log(members_list_formatted)
             return members_list_formatted
         }
 

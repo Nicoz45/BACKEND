@@ -7,7 +7,6 @@ class WorkSpaceRepository {
                 name: name,
                 url_image: url_image
             })
-            console.log('[SERVER]: Workspace creado con exito')
         }
         catch (error) {
             console.error('[SERVER ERROR]: Hubo un fallo al crear el espacio de trabajo ', error)
@@ -18,7 +17,6 @@ class WorkSpaceRepository {
     static async getAll() {
         try {
             const workspaces_found = await Workspace.find({ active: true })
-            console.log(workspaces_found)
             return workspaces_found
         }
         catch (error) {
@@ -30,7 +28,6 @@ class WorkSpaceRepository {
     static async getById(workspace_id) {
         try {
             const workspace_by_id = await Workspace.findById(workspace_id)
-            console.log(workspace_by_id)
             return workspace_by_id
         }
         catch (error) {

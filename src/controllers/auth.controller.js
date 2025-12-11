@@ -4,8 +4,6 @@ import AuthService from "../services/auth.services.js"
 
 class AuthController{
     static async register (req, res){
-        /*Estas validaciones se suelen hacer con librerias como "joi"*/
-        console.log(req.body)
         try{
             const {email, name, password} = req.body
             await AuthService.register(email, name, password)
@@ -15,10 +13,6 @@ class AuthController{
             })
         }
         catch(error){
-            /*
-            Si es un error especifico (tiene status) entonces tirame un error especifico.
-            Si es un error generico (no tiene status) entonces tirame un error generico.
-            */
             if(error.status){
                 res.status(error.status).json({
                     ok: false,
@@ -33,7 +27,6 @@ class AuthController{
                     status: 500
                 })
             }
-            console.log(error)
         }
     }
 
@@ -41,21 +34,11 @@ class AuthController{
         try{
             const { verification_token } = req.params
             await AuthService.verifyEmail(verification_token)
-            res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')/* (ENVIRONMENT.FRONTEND_URL + '/login?from=verified_email') */
-            /* res.json({
-                ok: true,
-                message: `Email verificado con exito`,
-                status: 200
-            }) */
+            res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
         }
         catch(error){
             if(error.status){
                 res.send(`<h1>${error.message}</h1>`)
-                /* res.send({
-                    ok: false,
-                    message: error.message,
-                    status: error.status
-                }) */
             }
             else{
                 console.error(error.message)

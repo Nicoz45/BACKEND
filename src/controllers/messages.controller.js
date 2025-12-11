@@ -5,7 +5,6 @@ class MessagesController {
         try {
             const {channel_selected, member} = req
             const {messages} = await MessageService.getAllByChannelId(channel_selected._id)
-            console.log('MESSAGES CONTROLLER:', messages)
             res.status(200).json({
                 ok: true,
                 status: 200,
@@ -45,7 +44,6 @@ class MessagesController {
             }
 
             const {messages, message_created} = await MessageService.create(content, member._id, channel_selected._id)
-            console.log('MESSAGE CREATED:', message_created)
             return res.status(201).json({
                 ok: true,
                 status: 201,

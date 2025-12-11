@@ -7,7 +7,6 @@ class ChannelsRepository {
                 id_workspaces: id_workspaces,
                 name: name
             })
-            console.log('[SERVER]: Canal creado con exito')
             return new_channel
         }
         catch (error) {
@@ -19,7 +18,6 @@ class ChannelsRepository {
     static async getAll() {
         try {
             const all_channels = await Channels.find({ active: true })
-            console.log(all_channels)
             return all_channels
         }
         catch (error) {
@@ -41,7 +39,6 @@ class ChannelsRepository {
     static async getById(channels_id) {
         try {
             const channel_found = await Channels.findById(channels_id)
-            console.log(channel_found)
             return channel_found
         }
         catch (error) {
