@@ -26,7 +26,7 @@ class AuthService {
             subject: 'Verifica tu cuenta de mail',
             html: `
                 <h1>Verifica tu cuenta de mail</h1>
-                <a href="${ENVIRONMENT.BACKEND_URL}/api/auth/verify-email/${verification_token}">Verificar</a>
+                <a href="${ENVIRONMENT.FRONTEND_URL_DEPLOY}/api/auth/verify-email/${verification_token}">Verificar</a>
             `
         })
         return
@@ -103,7 +103,7 @@ class AuthService {
                 resetPasswordExpires: Date.now() + 3600000
             })
 
-        const resetUrl = `${ENVIRONMENT.FRONTEND_URL}/reset-password/${resetToken}`
+        const resetUrl = `${ENVIRONMENT.FRONTEND_URL_DEPLOY}/reset-password/${resetToken}`
 
         const mail_send = await mailTransporter.sendMail({
             to: email,
