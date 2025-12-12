@@ -38,7 +38,7 @@ class AuthController{
                 throw new ServerError(400, 'El token de verificacion es invalido o ha expirado')
             }
             else{
-                res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
+                res.redirect(`${ENVIRONMENT.FRONTEND_URL_DEPLOY}/login?from=verified_email`)
             }
         }
         catch(error){
