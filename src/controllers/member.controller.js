@@ -11,7 +11,7 @@ class MemberController {
             const { invitation_token } = req.params
             await MemberWorkspaceService.confirmInvitation(invitation_token)
 
-            res.redirect(ENVIRONMENT.FRONTEND_URL + '/login')
+            res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login')
         } catch (error) {
             if (error instanceof jwt.JsonWebTokenError) {
                 res.status(400).json(

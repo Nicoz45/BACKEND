@@ -43,11 +43,6 @@ class AuthController{
             else{
                 console.error(error.message)
                 res.send('<h1>Error interno en el servidor</h1>')
-                /* res.send({
-                    ok: false,
-                    message: 'Error interno en el servidor',
-                    status: 500
-                }) */
             }
         }
     }
