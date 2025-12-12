@@ -33,8 +33,13 @@ class AuthController{
     static async verifyEmail(req, res){
         try{
             const { verification_token } = req.params
-            await AuthService.verifyEmail(verification_token)
-            return res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
+            const result = await AuthService.verifyEmail(verification_token)
+            if(!result.verified){
+                throw new ServerError(400, 'El token de verificacion es invalido o ha expirado')
+            }
+            else{
+                res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
+            }
         }
         catch(error){
             if(error.status){

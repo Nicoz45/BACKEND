@@ -12,7 +12,8 @@ authRouter.post('/register',
     validateRequest(registerSchema),
     AuthController.register)
 
-authRouter.get('/verify-email/:verification_token', AuthController.verifyEmail)
+authRouter.get('/verify-email/:verification_token', 
+    AuthController.verifyEmail)
 
 authRouter.post('/login',
     validateRequest(LoginSchema),
