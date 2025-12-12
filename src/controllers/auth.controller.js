@@ -34,7 +34,7 @@ class AuthController{
         try{
             const { verification_token } = req.params
             await AuthService.verifyEmail(verification_token)
-            res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
+            return res.redirect(ENVIRONMENT.FRONTEND_URL_DEPLOY + '/login?from=verified_email')
         }
         catch(error){
             if(error.status){
